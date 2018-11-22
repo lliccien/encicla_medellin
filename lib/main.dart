@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => new HomePageState();
 }
 
-// modelo
+// modelos
 class Encicla {
   int date;
   List stations;
@@ -24,7 +24,7 @@ class Encicla {
   Encicla({
     this.date,
     this.stations
-});
+  });
 
   factory Encicla.fromJson(Map<String, dynamic> parsedJson){
     return Encicla(
@@ -33,7 +33,6 @@ class Encicla {
     );
   }
 }
-
 
 class HomePageState extends State<HomePage> {
   
@@ -63,13 +62,14 @@ class HomePageState extends State<HomePage> {
       data = encicla.stations;
     });
 
-    print(data[0]['name']);
+    //print(data[0]['items']);
 
     return 'Success!';
   }
 
   @override
-  void iniStated() {
+  void initState() {
+    super.initState();
     this.getData();
   }
 
@@ -83,13 +83,101 @@ class HomePageState extends State<HomePage> {
       body: new ListView.builder(
         itemCount: data == null ? 0 : data.length,
         itemBuilder: (BuildContext context, int index) {
-          return new Card(
-            child: new Text(data[index]['name']),
+          return new ExpansionTile(
+            title: new Text(
+              data[index]['name'].toString().toUpperCase(),
+              style: TextStyle(fontSize: 20.0),
+            ),
+            children: <Widget>[
+              new Column(
+                children: _buildExpandableStations(data[index]['items'])
+              )
+            ],
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          this.getData();
+          //print('refresh');
+        },
+        tooltip: 'Refresh',
+        child: Icon(Icons.refresh),
       ),
     );
   }
 }
 
+_buildExpandableStations(List stations) {
+  List<Widget> columnStation = [];
+  Map<String, dynamic> station;
+    
+    /*
+    * implementacion basica de listCollapse
+    */
 
+    // for(var i = 0; i < stations.length; i++) {
+    //   station = stations[i];
+    //   columnStation.add(
+    //     new ListTile(
+    //       title: new Text(station['name'])
+    //     )
+    //   );
+    //   print(station['name']);
+    // }
+
+    for(var i = 0; i < stations.length; i++) {
+      station = stations[i];
+      columnStation.add(
+        new Card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    child: new Text(
+                      station['name'].toString().toUpperCase(),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0) 
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end, 
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10.0),
+                    child: new Text(station['address']),
+                  )
+                ],
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton(
+                      onPressed: () => {},
+                      color: Colors.blue,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column( 
+                        children: <Widget>[
+                          Icon(Icons.motorcycle),
+                          Text('Disponibles: ' +  station['bikes'].toString())
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+    
+        )
+      );
+      // print(station['name']);
+    }
+
+    return columnStation;
+}
