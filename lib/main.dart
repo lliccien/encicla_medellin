@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 void main() {
   runApp(new MaterialApp(
+    title: 'Encicla Medellin',
     home: new HomePage(),
   ));
 
@@ -78,7 +79,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Encicla"),
+        title: new Text("Encicla Medellin".toUpperCase()),
       ),
       body: new ListView.builder(
         itemCount: data == null ? 0 : data.length,
@@ -86,7 +87,7 @@ class HomePageState extends State<HomePage> {
           return new ExpansionTile(
             title: new Text(
               data[index]['name'].toString().toUpperCase(),
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             children: <Widget>[
               new Column(
