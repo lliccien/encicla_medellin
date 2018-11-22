@@ -37,6 +37,7 @@ class Encicla {
 
 class HomePageState extends State<HomePage> {
   
+  List data;
 
   Future<String> getData() async {
 
@@ -53,23 +54,39 @@ class HomePageState extends State<HomePage> {
     * debe definirce una clase con la esturctura de la respuesta y 
     * un metodo de conversion formJson
     */
-    // decodifico la respuesta
-    final jsonResponse = json.decode(response.body);
-    // la convierto a mi modelo con el metodo
-    Encicla encicla = new Encicla.fromJson(jsonResponse);
-    // obtengo la lista 
-    List data = encicla.stations;
-    print(data);
+    this.setState(() {
+      // decodifico la respuesta
+      final jsonResponse = json.decode(response.body);
+      // la convierto a mi modelo con el metodo
+      Encicla encicla = new Encicla.fromJson(jsonResponse);
+      // obtengo la lista 
+      data = encicla.stations;
+    });
+
+    print(data[0]['name']);
+
+    return 'Success!';
   }
+
+  @override
+  void iniStated() {
+    this.getData();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new Center(
-        child: new RaisedButton(
-          child: new Text("Get data"),
-          onPressed: getData,
-        ),
+      appBar: new AppBar(
+        title: new Text("Encicla"),
+      ),
+      body: new ListView.builder(
+        itemCount: data == null ? 0 : data.length,
+        itemBuilder: (BuildContext context, int index) {
+          return new Card(
+            child: new Text(data[index]['name']),
+          );
+        },
       ),
     );
   }
